@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成长印记 — 开发工作清单</title>
+<style>
+@font-face {
+  font-family: 'WorkSans';
+  src: url('./_shared/fonts/WorkSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'WorkSans';
+  src: url('./_shared/fonts/WorkSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'JetBrainsMono';
+  src: url('./_shared/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+:root {
+  --bg: #FFFBF7;
+  --bg2: #FFF3E6;
+  --bg3: #F5E6D3;
+  --ink: #2D2420;
+  --muted: #8C7B6E;
+  --rule: #E8D5C4;
+  --accent: #E8833A;
+  --accent2: #5B8C5A;
+  --accent3: #4A6FA5;
+  --danger: #C0564A;
+  --success: #5B8C5A;
+  --warning: #D4A537;
+  --font-heading: 'WorkSans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-body: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  --font-mono: 'JetBrainsMono', 'Cascadia Code', 'Consolas', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Header ===== */
+.header {
+  background: linear-gradient(135deg, #FFF3E6 0%, #FFE4CC 40%, #FFD4B8 100%);
+  padding: 2.5rem 1.5rem 2rem;
+  border-bottom: 1px solid var(--rule);
+}
+.header-content {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.header-tag {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  letter-spacing: 0.06em;
+  margin-bottom: 1rem;
+  font-family: var(--font-heading);
+}
+.header h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+.header .subtitle {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 600px;
+}
+
+/* ===== Progress Dashboard ===== */
+.dashboard {
+  max-width: 1100px;
+  margin: -1rem auto 0;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 10;
+}
+.dashboard-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(45,36,32,0.08);
+  border: 1px solid var(--rule);
+}
+.progress-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.progress-item {
+  text-align: center;
+}
+.progress-item .label {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
+}
+.progress-item .value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-family: var(--font-heading);
+  line-height: 1;
+}
+.progress-item .value .total {
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+.progress-bar-wrap {
+  height: 8px;
+  background: var(--bg3);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+.progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  background: var(--accent);
+}
+.progress-bar.backend { background: var(--accent3); }
+.progress-bar.frontend { background: var(--accent); }
+.progress-bar.integration { background: var(--accent2); }
+.progress-bar.delivery { background: var(--warning); }
+.progress-bar.overall { background: linear-gradient(90deg, var(--accent3), var(--accent), var(--accent2)); }
+
+/* Week progress */
+.week-progress {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+.week-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.week-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--bg3);
+  transition: background 0.3s;
+}
+.week-dot.active { background: var(--accent); }
+.week-dot.done { background: var(--accent2); }
+.week-item .week-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.week-item .week-count {
+  font-size: 0.78rem;
+  color: var(--ink);
+  font-family: var(--font-mono);
+}
+
+/* ===== Filter Bar ===== */
+.filter-bar {
+  max-width: 1100px;
+  margin: 1.5rem auto 0;
+  padding: 0 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-btn {
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-body);
+}
+.filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.filter-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.filter-btn .count {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-left: 0.25rem;
+}
+.filter-spacer { flex: 1; }
+.reset-btn {
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.reset-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ===== Task List ===== */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+.week-section {
+  margin-bottom: 2.5rem;
+}
+.week-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent);
+}
+.week-badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-family: var(--font-heading);
+}
+.week-badge.w1 { background: var(--danger); }
+.week-badge.w2 { background: var(--accent); }
+.week-badge.w3 { background: var(--accent); }
+.week-badge.w4 { background: var(--accent2); }
+.week-badge.w5 { background: var(--accent2); }
+.week-badge.w6 { background: var(--accent3); }
+.week-title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.week-desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-left: auto;
+}
+.week-progress-mini {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* Task Card */
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.task-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(232,131,58,0.1);
+}
+.task-card.completed {
+  background: #F0F9F0;
+  border-color: var(--accent2);
+  opacity: 0.85;
+}
+.task-card.completed .task-name {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+/* Checkbox */
+.checkbox {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--rule);
+  border-radius: 6px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+.checkbox:hover { border-color: var(--accent); }
+.task-card.completed .checkbox {
+  background: var(--accent2);
+  border-color: var(--accent2);
+}
+.checkbox svg {
+  width: 16px;
+  height: 16px;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.task-card.completed .checkbox svg { opacity: 1; }
+
+/* Task Content */
+.task-content {
+  flex: 1;
+  min-width: 0;
+}
+.task-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.25rem;
+}
+.task-id {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.task-id.backend { background: var(--accent3); color: #fff; }
+.task-id.frontend { background: var(--accent); color: #fff; }
+.task-id.test { background: var(--accent2); color: #fff; }
+.task-id.delivery { background: var(--warning); color: #fff; }
+.task-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.pri {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.pri.p0 { background: #C0564A; color: #fff; }
+.pri.p1 { background: var(--accent); color: #fff; }
+.pri.p2 { background: var(--accent2); color: #fff; }
+.pri.p3 { background: var(--muted); color: #fff; }
+.task-days {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+.task-desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: 0.25rem;
+}
+.task-deliverable {
+  font-size: 0.82rem;
+  color: var(--accent);
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+.task-card.completed .task-deliverable { color: var(--accent2); }
+
+/* Status badge */
+.status-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+.status-badge.done { background: var(--accent2); color: #fff; }
+.status-badge.doing { background: var(--accent); color: #fff; }
+.status-badge.todo { background: var(--bg3); color: var(--muted); }
+
+/* ===== Footer ===== */
+.footer {
+  border-top: 2px solid var(--rule);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 2rem;
+}
+.footer-stat {
+  display: inline-block;
+  margin: 0 1rem;
+}
+.footer-stat strong {
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .header h1 { font-size: 1.5rem; }
+  .progress-row { grid-template-columns: 1fr 1fr; }
+  .week-progress { grid-template-columns: 1fr 1fr; }
+  .task-card { padding: 0.75rem; gap: 0.75rem; }
+  .week-desc { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header class="header">
+  <div class="header-content">
+    <span class="header-tag">开发工作清单</span>
+    <h1>成长印记 · 开发任务跟踪</h1>
+    <p class="subtitle">42项开发任务实时跟踪，自动记录进度。点击任务卡片勾选完成状态。</p>
+  </div>
+</header>
+
+<!-- ===== Progress Dashboard ===== -->
+<div class="dashboard">
+  <div class="dashboard-card">
+    <div class="progress-row">
+      <div class="progress-item">
+        <div class="label">总进度</div>
+        <div class="value"><span id="overall-done">0</span><span class="total">/<span id="overall-total">42</span></span></div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar overall" id="bar-overall" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="label">后端 Backend</div>
+        <div class="value"><span id="backend-done">0</span><span class="total">/<span id="backend-total">16</span></span></div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar backend" id="bar-backend" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="label">前端 Frontend</div>
+        <div class="value"><span id="frontend-done">0</span><span class="total">/<span id="frontend-total">16</span></span></div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar frontend" id="bar-frontend" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="label">联调 Integration</div>
+        <div class="value"><span id="integration-done">0</span><span class="total">/<span id="integration-total">5</span></span></div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar integration" id="bar-integration" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="label">交付 Delivery</div>
+        <div class="value"><span id="delivery-done">0</span><span class="total">/<span id="delivery-total">5</span></span></div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar delivery" id="bar-delivery" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="week-progress" id="week-progress">
+      <!-- Generated by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== Filter Bar ===== -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">全部 <span class="count" id="count-all">42</span></button>
+  <button class="filter-btn" data-filter="backend">后端 <span class="count" id="count-backend">16</span></button>
+  <button class="filter-btn" data-filter="frontend">前端 <span class="count" id="count-frontend">16</span></button>
+  <button class="filter-btn" data-filter="integration">联调 <span class="count" id="count-integration">5</span></button>
+  <button class="filter-btn" data-filter="delivery">交付 <span class="count" id="count-delivery">5</span></button>
+  <button class="filter-btn" data-filter="todo">待完成 <span class="count" id="count-todo">0</span></button>
+  <button class="filter-btn" data-filter="done">已完成 <span class="count" id="count-done">0</span></button>
+  <div class="filter-spacer"></div>
+  <button class="reset-btn" id="reset-btn">重置进度</button>
+</div>
+
+<!-- ===== Task List ===== -->
+<div class="container" id="task-list">
+  <!-- Generated by JS -->
+</div>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <p>
+    <span class="footer-stat">已完成 <strong id="footer-done">0</strong> 项</span>
+    <span class="footer-stat">总任务 <strong>42</strong> 项</span>
+    <span class="footer-stat">完成率 <strong id="footer-rate">0%</strong></span>
+  </p>
+  <p style="margin-top:0.5rem;">成长印记（Growth Mark）· 2026</p>
+</footer>
+
+<script>
+// ===== Task Data =====
+const tasks = [
+  // Week 1 - Backend
+  { id: 'B01', week: 1, category: 'backend', name: '项目脚手架搭建', priority: 'P0', days: 0.5,
+    desc: 'FastAPI项目初始化；目录结构搭建（api/core/models/schemas/services/tasks/utils）；环境配置管理（.env + pydantic-settings）；CORS配置；日志配置（Loguru）',
+    deliverable: '可运行的空项目 + 配置体系', completed: true },
+  { id: 'B02', week: 1, category: 'backend', name: '数据库设计与建表', priority: 'P0', days: 1,
+    desc: '创建9张核心表（users/children/families/family_members/works/honors/work_tags/growth_reports/shares）；Alembic迁移脚本；初始种子数据',
+    deliverable: '建表SQL + Alembic迁移', completed: true },
+  { id: 'B03', week: 1, category: 'backend', name: '认证模块开发', priority: 'P0', days: 1.5,
+    desc: 'JWT工具（access_token 2h + refresh_token 7d）；手机号+验证码注册接口；密码登录接口；token刷新接口；依赖注入获取当前用户',
+    deliverable: '3个认证API + JWT中间件', completed: true },
+  { id: 'B04', week: 1, category: 'backend', name: '对象存储集成', priority: 'P0', days: 1,
+    desc: '阿里云OSS SDK集成；图片上传接口（含类型校验、大小限制10MB）；缩略图自动生成；CDN域名配置；临时上传URL签发',
+    deliverable: '上传API + OSS配置模块', completed: true },
+  // Week 1 - Frontend
+  { id: 'F01', week: 1, category: 'frontend', name: 'Flutter项目初始化', priority: 'P0', days: 0.5,
+    desc: 'Flutter 3.x项目创建；目录结构搭建（app/features/core/models/shared）；主题配置（暖橙色彩系统）；字体加载；状态栏/启动页配置',
+    deliverable: '可运行的Flutter空项目', completed: true },
+  { id: 'F02', week: 1, category: 'frontend', name: '路由与导航框架', priority: 'P0', days: 1,
+    desc: 'go_router路由配置；底部5Tab导航（时间线/荣誉墙/上传/故事/我的）；中间凸起上传按钮；页面跳转与传参；深链接预留',
+    deliverable: '导航框架 + Tab切换', completed: true },
+  { id: 'F03', week: 1, category: 'frontend', name: '网络层封装', priority: 'P0', days: 1.5,
+    desc: 'Dio实例配置（baseUrl/超时/拦截器）；请求拦截器（自动附加JWT Token）；响应拦截器（统一错误处理/Token过期刷新）；Retrofit接口生成器；Mock数据切换机制',
+    deliverable: '网络层 + Mock数据', completed: true },
+  { id: 'F04', week: 1, category: 'frontend', name: '本地存储与状态管理', priority: 'P0', days: 1,
+    desc: 'Riverpod Provider体系搭建；Hive初始化（离线缓存作品列表）；SharedPreferences存储用户配置；全局状态（用户信息/孩子档案/当前家庭）',
+    deliverable: '状态管理体系', completed: true },
+
+  // Week 2 - Backend
+  { id: 'B05', week: 2, category: 'backend', name: '用户与孩子档案服务', priority: 'P0', days: 1,
+    desc: '用户信息查询/更新接口；孩子档案CRUD接口；多子女支持；根据出生日期自动计算年龄（X岁X月）；头像上传',
+    deliverable: '用户/孩子档案API', completed: true },
+  { id: 'B06', week: 2, category: 'backend', name: '作品服务', priority: 'P0', days: 1.5,
+    desc: '作品CRUD接口；时间线分页查询（支持按分类/日期筛选）；作品标签管理；软删除；按孩子ID隔离数据',
+    deliverable: '作品CRUD + 时间线API', completed: true },
+  { id: 'B07', week: 2, category: 'backend', name: '荣誉服务', priority: 'P0', days: 1,
+    desc: '荣誉CRUD接口；按级别（国家/省/市/校）和类别筛选；荣誉统计接口（总数/本年度/高级别）；荣誉详情含获奖故事',
+    deliverable: '荣誉CRUD + 统计API', completed: true },
+  { id: 'B08', week: 2, category: 'backend', name: '家庭空间服务', priority: 'P1', days: 1.5,
+    desc: '创建家庭空间接口（自动生成6位邀请码）；通过邀请码加入家庭；家庭成员列表；成员角色管理（创建者/管理员/成员）；退出家庭',
+    deliverable: '家庭空间全套API', completed: true },
+  // Week 2 - Frontend
+  { id: 'F05', week: 2, category: 'frontend', name: '认证页面', priority: 'P0', days: 1.5,
+    desc: '登录页（手机号+密码）；注册页（手机号+验证码+昵称）；验证码倒计时；表单校验；Token存储与自动登录；首次使用引导页',
+    deliverable: '登录/注册流程', completed: true },
+  { id: 'F06', week: 2, category: 'frontend', name: '成长时间线页面', priority: 'P0', days: 2,
+    desc: '时间线列表（卡片式：图片+标题+日期+年龄+分类标签）；横向筛选标签栏；下拉刷新（成长树动画）；上拉分页加载；空状态设计；搜索入口',
+    deliverable: '时间线首页', completed: true },
+  { id: 'F07', week: 2, category: 'frontend', name: '作品上传页面', priority: 'P0', days: 2,
+    desc: '作品/荣誉类型切换；拍照/相册选择（image_picker）；图片预览与裁剪；AI识别中Loading动画；表单填写；日期选择器；保存提交',
+    deliverable: '作品上传全流程', completed: true },
+  { id: 'F08', week: 2, category: 'frontend', name: '作品详情页面', priority: 'P0', days: 1,
+    desc: '大图展示（支持双指缩放）；作品信息展示；分类标签；创作故事卡片；编辑/删除操作（左滑删除+二次确认）；分享按钮入口',
+    deliverable: '作品详情页', completed: true },
+
+  // Week 3 - Backend
+  { id: 'B09', week: 3, category: 'backend', name: 'AI服务集成', priority: 'P1', days: 2,
+    desc: '封装多模态大模型调用（通义千问VL/GPT-4V）；图像识别Prompt设计；返回JSON结构化结果（category/tags/description/confidence）；错误降级处理',
+    deliverable: 'AI识别API + Prompt模板', completed: true },
+  { id: 'B10', week: 3, category: 'backend', name: 'Celery异步任务', priority: 'P1', days: 1.5,
+    desc: 'Redis作为Broker配置；图片压缩异步任务（生成缩略图）；AI识别异步任务（上传后后台处理，完成后推送）；任务状态查询接口',
+    deliverable: 'Celery Worker + 任务API', completed: true },
+  { id: 'B11', week: 3, category: 'backend', name: '成长报告生成', priority: 'P2', days: 1.5,
+    desc: '按季度/年度汇总作品和荣誉数据；LLM生成成长报告（兴趣分析+成长建议）；报告存储与查询接口；报告模板管理',
+    deliverable: '报告生成API', completed: true },
+  { id: 'B12', week: 3, category: 'backend', name: '分享服务', priority: 'P2', days: 1,
+    desc: '生成分享卡片接口（AI辅助排版+模板引擎）；分享链接生成（带过期时间+访问密码）；分享记录查询；朋友圈/家庭群分享适配',
+    deliverable: '分享API + 卡片生成', completed: true },
+  // Week 3 - Frontend
+  { id: 'F09', week: 3, category: 'frontend', name: '荣誉墙页面', priority: 'P0', days: 1.5,
+    desc: '统计概览卡片（总荣誉/本年度/市级以上）；级别筛选标签（国家/省/市/校）；荣誉列表（奖牌图标+名称+日期+级别）；荣誉详情页',
+    deliverable: '荣誉墙页面', completed: true },
+  { id: 'F10', week: 3, category: 'frontend', name: '个人中心页面', priority: 'P0', days: 1,
+    desc: '用户信息卡（头像+昵称+记录数+存储量）；孩子档案管理（查看/添加/编辑/多子女切换）；功能列表；退出登录',
+    deliverable: '个人中心页', completed: true },
+  { id: 'F11', week: 3, category: 'frontend', name: '家庭空间功能', priority: 'P1', days: 1.5,
+    desc: '家庭空间主页（成员列表+角色标识）；邀请成员（生成二维码/分享链接）；加入家庭（输入邀请码）；成员管理；家庭内作品共享视图',
+    deliverable: '家庭空间全套页面', completed: true },
+  { id: 'F12', week: 3, category: 'frontend', name: '成长故事页面', priority: 'P2', days: 1.5,
+    desc: '报告列表（按季度/年度）；报告详情页（图文展示+兴趣分析+成长建议）；生成报告操作（Loading动画）；成长画册预览',
+    deliverable: '成长故事页面', completed: true },
+
+  // Week 4 - Backend
+  { id: 'B13', week: 4, category: 'backend', name: 'API文档完善', priority: 'P0', days: 0.5,
+    desc: 'FastAPI自动生成Swagger文档；补充接口描述、参数说明、响应示例；ReDoc文档部署；接口版本管理（/api/v1）',
+    deliverable: '完整API文档', completed: true },
+  { id: 'B14', week: 4, category: 'backend', name: '日志与异常监控', priority: 'P1', days: 0.5,
+    desc: '结构化日志（请求ID追踪）；Sentry异常上报集成；接口耗时监控；慢查询告警',
+    deliverable: '日志+监控体系', completed: true },
+  { id: 'B15', week: 4, category: 'backend', name: 'Docker部署配置', priority: 'P0', days: 1,
+    desc: 'Dockerfile（API服务）；docker-compose.yml（API + Celery + MySQL + Redis）；Nginx反向代理配置；环境变量管理；部署脚本',
+    deliverable: 'Docker部署方案', completed: true },
+  { id: 'B16', week: 4, category: 'backend', name: '单元测试与接口测试', priority: 'P1', days: 1.5,
+    desc: 'pytest框架搭建；认证/作品/荣誉核心接口测试（覆盖率≥70%）；AI服务Mock测试；CI测试脚本',
+    deliverable: '测试用例 + CI配置', completed: true },
+  // Week 4 - Frontend
+  { id: 'F13', week: 4, category: 'frontend', name: 'AI功能前端交互', priority: 'P1', days: 1,
+    desc: '上传后AI识别Loading动画（成长树生长动效）；识别结果展示（分类+标签建议）；标签选择/编辑交互；AI描述建议展示与编辑；识别失败降级提示',
+    deliverable: 'AI交互完整体验', completed: true },
+  { id: 'F14', week: 4, category: 'frontend', name: '分享功能', priority: 'P2', days: 1,
+    desc: '分享渠道选择（家庭群/朋友圈/生成卡片）；精美卡片预览（多模板选择）；保存到相册；分享链接复制；系统分享面板调用',
+    deliverable: '分享功能完整流程', completed: true },
+  { id: 'F15', week: 4, category: 'frontend', name: '离线缓存与同步', priority: 'P2', days: 1.5,
+    desc: 'Hive离线缓存时间线数据；无网络时展示缓存；网络恢复后自动同步；上传队列离线暂存与重试',
+    deliverable: '离线缓存机制', completed: true },
+  { id: 'F16', week: 4, category: 'frontend', name: 'UI打磨与适配', priority: 'P1', days: 2,
+    desc: 'iOS/Android双端UI适配（安全区域/刘海屏）；微交互动效；深色模式预留；无障碍标签；性能优化（图片懒加载/列表复用）',
+    deliverable: '高完成度UI', completed: true },
+
+  // Week 5 - Integration
+  { id: 'T01', week: 5, category: 'integration', name: '认证流程联调', priority: 'P0', days: 1,
+    desc: '注册→登录→Token刷新全流程联调（前端F05 + 后端B03）',
+    deliverable: '可完成注册登录全流程', completed: true },
+  { id: 'T02', week: 5, category: 'integration', name: '作品上传联调', priority: 'P0', days: 1,
+    desc: '拍照→上传→AI识别→保存→时间线展示（前端F06/F07 + 后端B04/B06/B09）',
+    deliverable: '完整上传流程可跑通', completed: true },
+  { id: 'T03', week: 5, category: 'integration', name: '荣誉与详情联调', priority: 'P0', days: 1,
+    desc: '荣誉上传→荣誉墙→详情查看→编辑删除（前端F08/F09 + 后端B07）',
+    deliverable: '荣誉全流程可跑通', completed: true },
+  { id: 'T04', week: 5, category: 'integration', name: '家庭空间联调', priority: 'P1', days: 1,
+    desc: '创建→邀请→加入→共享查看（前端F11 + 后端B08）',
+    deliverable: '多成员可共享查看数据', completed: true },
+  { id: 'T05', week: 5, category: 'integration', name: 'AI与分享联调', priority: 'P1', days: 0.5,
+    desc: '报告生成→分享卡片→保存（前端F12/F14 + 后端B11/B12）',
+    deliverable: 'AI报告和分享可演示', completed: true },
+
+  // Week 6 - Delivery
+  { id: 'D01', week: 6, category: 'delivery', name: 'Bug修复', priority: 'P0', days: 2,
+    desc: '修复联调阶段发现的Bug，按严重程度排序处理',
+    deliverable: '无阻塞性Bug', completed: true },
+  { id: 'D02', week: 6, category: 'delivery', name: 'UI终打磨', priority: 'P1', days: 1.5,
+    desc: '像素级对齐设计稿；动效细节优化；空状态/错误状态完善',
+    deliverable: '高完成度UI', completed: true },
+  { id: 'D03', week: 6, category: 'delivery', name: '种子数据填充', priority: 'P1', days: 0.5,
+    desc: '准备Demo用的种子数据（1个家庭+2个孩子+20条作品+10条荣誉）',
+    deliverable: 'Demo种子数据', completed: true },
+  { id: 'D04', week: 6, category: 'delivery', name: 'Demo视频录制', priority: 'P0', days: 1,
+    desc: '录制核心功能演示视频（3-5分钟）；截图素材准备',
+    deliverable: 'Demo视频', completed: false },
+  { id: 'D05', week: 6, category: 'delivery', name: '初赛提交', priority: 'P0', days: 0.5,
+    desc: '整理提交材料（Demo视频+项目说明+代码仓库）；论坛发帖',
+    deliverable: '提交完成', completed: false }
+];
+
+const weekInfo = {
+  1: { title: '基础设施搭建', desc: '脚手架、数据库、认证、前端框架', badge: 'w1' },
+  2: { title: '核心功能开发', desc: '作品/荣誉CRUD、时间线、上传页面', badge: 'w2' },
+  3: { title: 'AI与高级功能', desc: 'AI识别、家庭空间、成长故事、分享', badge: 'w3' },
+  4: { title: '功能完善优化', desc: '文档、监控、部署、测试、UI打磨', badge: 'w4' },
+  5: { title: '联调与测试', desc: '前后端联调、Bug修复、性能优化', badge: 'w5' },
+  6: { title: 'Demo交付', desc: 'UI打磨、种子数据、视频录制、提交', badge: 'w6' }
+};
+
+const STORAGE_KEY = 'growth-mark-dev-checklist';
+
+// ===== Load state from localStorage =====
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const savedTasks = JSON.parse(saved);
+      savedTasks.forEach(s => {
+        const task = tasks.find(t => t.id === s.id);
+        if (task) task.completed = s.completed;
+      });
+    }
+  } catch(e) { console.error('Load state error:', e); }
+}
+
+// ===== Save state to localStorage =====
+function saveState() {
+  try {
+    const state = tasks.map(t => ({ id: t.id, completed: t.completed }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) { console.error('Save state error:', e); }
+}
+
+// ===== Render tasks =====
+let currentFilter = 'all';
+
+function renderTasks() {
+  const container = document.getElementById('task-list');
+  let html = '';
+
+  for (let week = 1; week <= 6; week++) {
+    let weekTasks = tasks.filter(t => t.week === week);
+    
+    // Apply filter
+    if (currentFilter === 'todo') {
+      weekTasks = weekTasks.filter(t => !t.completed);
+    } else if (currentFilter === 'done') {
+      weekTasks = weekTasks.filter(t => t.completed);
+    } else if (currentFilter !== 'all') {
+      weekTasks = weekTasks.filter(t => t.category === currentFilter);
+    }
+
+    if (weekTasks.length === 0) continue;
+
+    const info = weekInfo[week];
+    const weekDone = tasks.filter(t => t.week === week && t.completed).length;
+    const weekTotal = tasks.filter(t => t.week === week).length;
+    const weekRate = weekTotal > 0 ? Math.round(weekDone / weekTotal * 100) : 0;
+
+    html += `<div class="week-section">
+      <div class="week-header">
+        <span class="week-badge ${info.badge}">Week ${week}</span>
+        <span class="week-title">${info.title}</span>
+        <span class="week-desc">${info.desc}</span>
+        <span class="week-progress-mini">${weekDone}/${weekTotal} (${weekRate}%)</span>
+      </div>`;
+
+    weekTasks.forEach(task => {
+      const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      const statusClass = task.completed ? 'done' : 'todo';
+      const statusText = task.completed ? '已完成' : '待开发';
+      html += `<div class="task-card ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+        <div class="checkbox">${checkIcon}</div>
+        <div class="task-content">
+          <div class="task-header-row">
+            <span class="task-id ${task.category}">${task.id}</span>
+            <span class="task-name">${task.name}</span>
+            <span class="pri ${task.priority.toLowerCase()}">${task.priority}</span>
+            <span class="task-days">${task.days}天</span>
+          </div>
+          <div class="task-desc">${task.desc}</div>
+          <div class="task-deliverable">交付物：${task.deliverable}</div>
+        </div>
+        <span class="status-badge ${statusClass}">${statusText}</span>
+      </div>`;
+    });
+
+    html += `</div>`;
+  }
+
+  if (html === '') {
+    html = '<div style="text-align:center;padding:3rem;color:var(--muted);">该筛选条件下无任务</div>';
+  }
+
+  container.innerHTML = html;
+
+  // Bind click events
+  document.querySelectorAll('.task-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const id = this.dataset.id;
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        saveState();
+        renderTasks();
+        updateProgress();
+      }
+    });
+  });
+}
+
+// ===== Update progress =====
+function updateProgress() {
+  const categories = ['backend', 'frontend', 'integration', 'delivery'];
+  let totalDone = 0;
+  let totalAll = 0;
+
+  categories.forEach(cat => {
+    const catTasks = tasks.filter(t => t.category === cat);
+    const done = catTasks.filter(t => t.completed).length;
+    const total = catTasks.length;
+    totalDone += done;
+    totalAll += total;
+
+    const doneEl = document.getElementById(`${cat}-done`);
+    const totalEl = document.getElementById(`${cat}-total`);
+    const barEl = document.getElementById(`bar-${cat}`);
+    if (doneEl) doneEl.textContent = done;
+    if (totalEl) totalEl.textContent = total;
+    if (barEl) barEl.style.width = (total > 0 ? done / total * 100 : 0) + '%';
+  });
+
+  // Overall
+  document.getElementById('overall-done').textContent = totalDone;
+  document.getElementById('overall-total').textContent = totalAll;
+  document.getElementById('bar-overall').style.width = (totalAll > 0 ? totalDone / totalAll * 100 : 0) + '%';
+
+  // Filter counts
+  document.getElementById('count-all').textContent = tasks.length;
+  document.getElementById('count-backend').textContent = tasks.filter(t => t.category === 'backend').length;
+  document.getElementById('count-frontend').textContent = tasks.filter(t => t.category === 'frontend').length;
+  document.getElementById('count-integration').textContent = tasks.filter(t => t.category === 'integration').length;
+  document.getElementById('count-delivery').textContent = tasks.filter(t => t.category === 'delivery').length;
+  document.getElementById('count-todo').textContent = tasks.filter(t => !t.completed).length;
+  document.getElementById('count-done').textContent = tasks.filter(t => t.completed).length;
+
+  // Footer
+  document.getElementById('footer-done').textContent = totalDone;
+  document.getElementById('footer-rate').textContent = (totalAll > 0 ? Math.round(totalDone / totalAll * 100) : 0) + '%';
+
+  // Week progress dots
+  renderWeekProgress();
+}
+
+// ===== Render week progress =====
+function renderWeekProgress() {
+  const container = document.getElementById('week-progress');
+  let html = '';
+  for (let week = 1; week <= 6; week++) {
+    const weekTasks = tasks.filter(t => t.week === week);
+    const done = weekTasks.filter(t => t.completed).length;
+    const total = weekTasks.length;
+    const allDone = done === total;
+    const hasProgress = done > 0;
+    const dotClass = allDone ? 'done' : (hasProgress ? 'active' : '');
+    html += `<div class="week-item">
+      <span class="week-dot ${dotClass}"></span>
+      <span class="week-label">W${week}</span>
+      <span class="week-count">${done}/${total}</span>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+
+// ===== Filter buttons =====
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    currentFilter = this.dataset.filter;
+    renderTasks();
+  });
+});
+
+// ===== Reset button =====
+document.getElementById('reset-btn').addEventListener('click', function() {
+  if (confirm('确定要重置所有进度吗？此操作不可撤销。')) {
+    tasks.forEach(t => t.completed = false);
+    saveState();
+    renderTasks();
+    updateProgress();
+  }
+});
+
+// ===== Init =====
+loadState();
+renderTasks();
+updateProgress();
+</script>
+
+</body>
+</html>

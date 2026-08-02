@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#388E3C"/>
+  <polygon points="200,40 320,90 320,210 200,260 80,210 80,90" fill="#C8E6C9" stroke="#FFFFFF" stroke-width="3"/>
+  <circle cx="200" cy="150" r="55" fill="#388E3C"/>
+  <text x="200" y="145" font-family="serif" font-size="28" fill="#FFFFFF" text-anchor="middle" font-weight="bold">市级</text>
+  <text x="200" y="175" font-family="serif" font-size="14" fill="#FFFFFF" text-anchor="middle">特等奖</text>
+  <text x="200" y="290" font-family="serif" font-size="16" fill="#FFFFFF" text-anchor="middle">荣誉证书</text>
+</svg>

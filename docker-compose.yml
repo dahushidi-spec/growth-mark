@@ -1,0 +1,180 @@
+# 成长印记 · 一键 Demo 部署编排
+# 启动：docker compose up -d --build
+# 访问：http://localhost
+# 服务：web(nginx) / api / celery-worker / mysql / redis
+services:
+  # ===== MySQL 数据库 =====
+  mysql:
+    image: mysql:8.0
+    container_name: growth-mark-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-growthmark123}
+      MYSQL_DATABASE: ${DB_NAME:-growth_mark}
+      TZ: Asia/Shanghai
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-growthmark123}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - growth-mark-net
+
+  # ===== Redis 缓存与消息队列 =====
+  redis:
+    image: redis:7-alpine
+    container_name: growth-mark-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - growth-mark-net
+
+  # ===== FastAPI 应用 =====
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: growth-mark-api
+    restart: unless-stopped
+    environment:
+      # 应用：development 模式让 SMS 走固定码 123456
+      APP_NAME: GrowthMark
+      APP_ENV: development
+      DEBUG: "true"
+      # 数据库
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-growthmark123}
+      DB_NAME: ${DB_NAME:-growth_mark}
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # JWT（Demo 专用密钥，勿用于生产）
+      JWT_SECRET_KEY: dev-demo-secret-key-not-for-production-use-only-0001
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 120
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      # OSS 留空 → 触发本地文件存储兜底
+      OSS_ACCESS_KEY_ID: ""
+      OSS_ACCESS_KEY_SECRET: ""
+      OSS_BUCKET_NAME: ""
+      OSS_ENDPOINT: oss-cn-hangzhou.aliyuncs.com
+      OSS_CDN_DOMAIN: ""
+      # 短信留空 → dev 模式使用固定码 123456
+      SMS_ACCESS_KEY_ID: ""
+      SMS_ACCESS_KEY_SECRET: ""
+      SMS_SIGN_NAME: ""
+      SMS_TEMPLATE_CODE: ""
+      # AI 留空 → 触发 mock 兜底返回
+      AI_PROVIDER: qwen
+      AI_API_KEY: ""
+      AI_MODEL: qwen-vl-max
+      AI_BASE_URL: https://dashscope.aliyuncs.com/api/v1
+      # Celery
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      # Sentry 留空 → 跳过
+      SENTRY_DSN: ""
+      # 日志
+      LOG_LEVEL: INFO
+      # CORS：允许前端同源访问
+      CORS_ORIGINS: '["http://localhost","http://127.0.0.1","http://localhost:80","http://localhost:8000"]'
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/logs:/app/logs
+    networks:
+      - growth-mark-net
+
+  # ===== Celery Worker（异步任务：AI 识别、成长报告生成） =====
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: growth-mark-celery
+    restart: unless-stopped
+    command: celery -A app.tasks.celery_app worker --loglevel=info --concurrency=2
+    # Celery 不运行 API 服务器，禁用 Dockerfile 中的健康检查
+    healthcheck:
+      disable: true
+    environment:
+      APP_NAME: GrowthMark
+      APP_ENV: development
+      DEBUG: "true"
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-growthmark123}
+      DB_NAME: ${DB_NAME:-growth_mark}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET_KEY: dev-demo-secret-key-not-for-production-use-only-0001
+      AI_PROVIDER: qwen
+      AI_API_KEY: ""
+      AI_MODEL: qwen-vl-max
+      AI_BASE_URL: https://dashscope.aliyuncs.com/api/v1
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      CORS_ORIGINS: '["http://localhost","http://127.0.0.1"]'
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/logs:/app/logs
+    networks:
+      - growth-mark-net
+
+  # ===== Web 前端（Flutter Web + Nginx 反向代理） =====
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: growth-mark-web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      api:
+        condition: service_started
+    # nginx + Flutter SPA 首页重定向后不返回纯 200，禁用 healthcheck
+    healthcheck:
+      disable: true
+    networks:
+      - growth-mark-net
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  growth-mark-net:
+    driver: bridge

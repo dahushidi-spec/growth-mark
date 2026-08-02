@@ -1,0 +1,17 @@
+# 开发依赖（代码规范与测试工具）
+# 安装：pip install -r dev-requirements.txt
+
+# 代码格式化
+black>=24.1.0
+
+# 代码检查（替代 flake8 + isort + pyupgrade）
+ruff>=0.2.0
+
+# 类型检查
+mypy>=1.8.0
+
+# 测试覆盖率
+pytest-cov>=4.1.0
+
+# 测试 Mock
+respx>=0.20.0

@@ -1,0 +1,55 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "lib/generated/**"
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_literals_to_create_immutables: true
+    avoid_print: true
+    avoid_unnecessary_containers: true
+    prefer_final_locals: true
+    prefer_final_fields: true
+    use_key_in_widget_constructors: true
+    sized_box_for_whitespace: true
+    avoid_web_libraries_in_flutter: true
+    prefer_const_declarations: true
+    unnecessary_const: true
+    unnecessary_new: true
+    always_declare_return_types: true
+    annotate_overrides: true
+    avoid_empty_else: true
+    avoid_function_literals_in_foreach_calls: true
+    avoid_redundant_argument_values: true
+    avoid_returning_null_for_void: true
+    avoid_unused_constructor_parameters: true
+    camel_case_types: true
+    directives_ordering: true
+    empty_catches: true
+    file_names: true
+    library_prefixes: true
+    non_constant_identifier_names: true
+    prefer_adjacent_string_concatenation: true
+    prefer_collection_literals: true
+    prefer_conditional_assignment: true
+    prefer_contains: true
+    prefer_equal_for_default_values: true
+    prefer_initializing_formals: true
+    prefer_is_empty: true
+    prefer_is_not_empty: true
+    prefer_typing_uninitialized_variables: true
+    require_trailing_commas: true
+    sort_child_properties_last: true
+    unnecessary_brace_in_string_interps: true
+    unnecessary_lambdas: true
+    unnecessary_null_in_if_null_operators: true
+    unnecessary_this: true
+    use_function_type_syntax_for_parameters: true

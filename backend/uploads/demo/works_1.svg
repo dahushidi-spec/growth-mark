@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#F5F5DC"/>
+  <rect x="20" y="20" width="360" height="260" fill="none" stroke="#8B4513" stroke-width="3"/>
+  <text x="200" y="100" font-family="serif" font-size="80" fill="#000000" text-anchor="middle" font-weight="bold">山</text>
+  <text x="200" y="200" font-family="serif" font-size="80" fill="#000000" text-anchor="middle" font-weight="bold">水</text>
+  <text x="200" y="265" font-family="serif" font-size="20" fill="#5D4037" text-anchor="middle">书法习作</text>
+</svg>

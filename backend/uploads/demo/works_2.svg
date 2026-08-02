@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#E1F5FE"/>
+  <polygon points="200,80 240,180 160,180" fill="#FFB74D"/>
+  <rect x="180" y="170" width="40" height="50" fill="#8D6E63"/>
+  <circle cx="100" cy="100" r="25" fill="#F44336"/>
+  <circle cx="300" cy="80" r="20" fill="#4CAF50"/>
+  <rect x="80" y="220" width="80" height="40" fill="#9C27B0" rx="4"/>
+  <rect x="240" y="220" width="80" height="40" fill="#3F51B5" rx="4"/>
+  <text x="200" y="280" font-family="serif" font-size="20" fill="#455A64" text-anchor="middle">手工作品</text>
+</svg>
